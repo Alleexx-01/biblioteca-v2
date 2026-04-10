@@ -1,0 +1,107 @@
+{% extends 'shared/base_admin.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="stats-grid scroll-reveal">
+  <div class="stat-card" style="--accent:#38BDF8">
+    <div class="stat-top"><span class="stat-icon">📗</span><span class="stat-trend">Total</span></div>
+    <div class="stat-num">{{ stats.libros }}</div>
+    <div class="stat-label">Libros en catálogo</div>
+    <a href="{{ url_for('admin.libros') }}" class="stat-link">Ver catálogo →</a>
+  </div>
+  <div class="stat-card" style="--accent:#34D399">
+    <div class="stat-top"><span class="stat-icon">👥</span><span class="stat-trend">Activos</span></div>
+    <div class="stat-num">{{ stats.usuarios }}</div>
+    <div class="stat-label">Usuarios registrados</div>
+    <a href="{{ url_for('admin.usuarios') }}" class="stat-link">Ver usuarios →</a>
+  </div>
+  <div class="stat-card" style="--accent:#FBBF24">
+    <div class="stat-top"><span class="stat-icon">📋</span><span class="stat-trend">En curso</span></div>
+    <div class="stat-num">{{ stats.activos }}</div>
+    <div class="stat-label">Préstamos activos</div>
+    <a href="{{ url_for('admin.prestamos') }}" class="stat-link">Ver préstamos →</a>
+  </div>
+  <div class="stat-card" style="--accent:{% if stats.vencidos > 0 %}#F87171{% else %}#A78BFA{% endif %}">
+    <div class="stat-top"><span class="stat-icon">⚠️</span><span class="stat-trend">Urgente</span></div>
+    <div class="stat-num">{{ stats.vencidos }}</div>
+    <div class="stat-label">Préstamos vencidos</div>
+    <a href="{{ url_for('admin.prestamos') }}" class="stat-link">Gestionar →</a>
+  </div>
+</div>
+
+<!-- Acciones rápidas -->
+<section class="section scroll-reveal">
+  <h2 class="section-title">Acciones rápidas</h2>
+  <div class="quick-actions">
+    <a href="{{ url_for('admin.nuevo_prestamo') }}" class="qa-card qa-primary">
+      <span class="qa-icon">📤</span>
+      <span class="qa-label">Nuevo préstamo</span>
+    </a>
+    <a href="{{ url_for('admin.nuevo_libro') }}" class="qa-card">
+      <span class="qa-icon">➕</span>
+      <span class="qa-label">Agregar libro</span>
+    </a>
+    <a href="{{ url_for('admin.nuevo_autor') }}" class="qa-card">
+      <span class="qa-icon">✍️</span>
+      <span class="qa-label">Agregar autor</span>
+    </a>
+    <a href="{{ url_for('admin.nuevo_usuario') }}" class="qa-card">
+      <span class="qa-icon">👤</span>
+      <span class="qa-label">Registrar usuario</span>
+    </a>
+  </div>
+</section>
+
+{% if prestamos_vencidos %}
+<section class="section scroll-reveal">
+  <h2 class="section-title danger-title">⚠️ Préstamos vencidos</h2>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Usuario</th><th>Libro</th><th>Fecha límite</th><th>Retraso</th><th>Acción</th></tr></thead>
+      <tbody>
+        {% for p in prestamos_vencidos %}
+        <tr class="row-danger">
+          <td>{{ p.usuario.nombre }}</td>
+          <td>{{ p.libro.titulo }}</td>
+          <td>{{ p.fecha_limite.strftime('%d/%m/%Y') }}</td>
+          <td><span class="badge badge-danger">{{ -p.dias_restantes() }} días</span></td>
+          <td>
+            <form method="POST" action="{{ url_for('admin.devolver', pid=p.id) }}">
+              <button class="btn btn-sm btn-success">Registrar devolución</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+
+{% if prestamos_recientes %}
+<section class="section scroll-reveal">
+  <h2 class="section-title">Actividad reciente</h2>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Usuario</th><th>Libro</th><th>Fecha</th><th>Estado</th></tr></thead>
+      <tbody>
+        {% for p in prestamos_recientes %}
+        <tr>
+          <td>{{ p.usuario.nombre }}</td>
+          <td>{{ p.libro.titulo }}</td>
+          <td>{{ p.fecha_prestamo.strftime('%d/%m/%Y') }}</td>
+          <td>
+            {% if p.estado == 'Activo' %}
+              {% if p.esta_vencido() %}<span class="badge badge-danger">Vencido</span>
+              {% else %}<span class="badge badge-warning">Activo</span>{% endif %}
+            {% else %}<span class="badge badge-success">Devuelto</span>{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

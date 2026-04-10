@@ -1,0 +1,40 @@
+{% extends 'shared/base_admin.html' %}
+{% block title %}Libros{% endblock %}
+{% block page_title %}Catálogo de Libros{% endblock %}
+{% block content %}
+<div class="page-actions scroll-reveal">
+  <form class="search-inline" method="GET">
+    <input type="text" name="q" value="{{ termino }}" placeholder="Buscar..." class="form-control search-sm">
+    <button type="submit" class="btn btn-secondary">Buscar</button>
+    {% if termino %}<a href="{{ url_for('admin.libros') }}" class="btn btn-ghost">✕</a>{% endif %}
+  </form>
+  <a href="{{ url_for('admin.nuevo_libro') }}" class="btn btn-primary">+ Agregar libro</a>
+</div>
+<div class="table-wrap scroll-reveal">
+  <table class="table">
+    <thead><tr><th>Título</th><th>Autor(es)</th><th>ISBN</th><th>Género</th><th>Disponibilidad</th><th>Acciones</th></tr></thead>
+    <tbody>
+        {% for l in libros %}
+        <tr>
+            <td><strong>{{ l.titulo }}</strong></td>
+            <td>{{ l.autores|map(attribute='nombre')|join(', ') or '—' }}</td>
+            <td><code>{{ l.isbn }}</code></td>
+            <td>{{ l.genero or '—' }}</td>
+            <td>
+                {% if l.esta_disponible() %}<span class="badge badge-success">{{ l.ejemplares_disponibles }}/{{ l.ejemplares_total }}</span>
+                {% else %}<span class="badge badge-danger">No disponible</span>{% endif %}
+            </td>
+            <td class="td-actions">
+                <a href="{{ url_for('admin.editar_libro', lid=l.id) }}" class="btn btn-sm btn-secondary">Editar</a>
+                <form method="POST" action="{{ url_for('admin.eliminar_libro', lid=l.id) }}" style="display:inline">
+                    <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar libro?')">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="td-empty">No se encontraron libros.</td></tr>
+        {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

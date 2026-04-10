@@ -1,0 +1,59 @@
+{% extends 'shared/base_admin.html' %}
+{% block title %}{% if libro %}Editar{% else %}Nuevo{% endif %} Libro{% endblock %}
+{% block page_title %}{% if libro %}Editar Libro{% else %}Nuevo Libro{% endif %}{% endblock %}
+{% block content %}
+<div class="form-card scroll-reveal">
+    <form method="POST">
+        <div class="form-row">
+            <div class="field">
+                <label>ISBN * <small>(13 dígitos)</small></label>
+                <input type="text" name="isbn" class="form-control" maxlength="13"
+                       value="{{ libro.isbn if libro else '' }}" {% if libro %}disabled{% endif %}
+                       required placeholder="1234567890123">
+            </div>
+            <div class="field">
+                <label>Título *</label>
+                <input type="text" name="titulo" class="form-control" required value="{{ libro.titulo if libro else '' }}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="field">
+                <label>Año de publicación</label>
+                <input type="number" name="anio_pub" class="form-control" min="1000" max="2099"
+                       value="{{ libro.anio_pub if libro else '' }}" placeholder="2024">
+            </div>
+            <div class="field">
+                <label>Género</label>
+                <input type="text" name="genero" class="form-control" value="{{ libro.genero if libro else '' }}" placeholder="Ficción, Historia...">
+            </div>
+        </div>
+        <div class="field">
+            <label>Descripción</label>
+            <textarea name="descripcion" class="form-control" rows="3" placeholder="Breve descripción del libro...">{{ libro.descripcion if libro else '' }}</textarea>
+        </div>
+        <div class="field">
+            <label>Cantidad de ejemplares *</label>
+            <input type="number" name="ejemplares_total" class="form-control" min="1"
+                   value="{{ libro.ejemplares_total if libro else 1 }}"
+                   required>
+        </div>
+        <div class="field">
+            <label>Autores</label>
+            <div class="checkbox-grid">
+                {% for a in autores %}
+                <label class="check-label">
+                    <input type="checkbox" name="autores_ids" value="{{ a.id }}" {% if libro and a in libro.autores %}checked{% endif %}>
+                    {{ a.nombre }}
+                </label>
+                {% else %}
+                <p class="text-muted">No hay autores. <a href="{{ url_for('admin.nuevo_autor') }}">Agregar</a></p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-footer">
+            <button type="submit" class="btn btn-primary">{% if libro %}Guardar cambios{% else %}Registrar libro{% endif %}</button>
+            <a href="{{ url_for('admin.libros') }}" class="btn btn-ghost">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

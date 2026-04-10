@@ -1,0 +1,44 @@
+{% extends 'shared/base_usuario.html' %}
+{% block title %}Catálogo{% endblock %}
+{% block content %}
+<div class="catalogo-header scroll-reveal">
+  <h1>📚 Catálogo de Libros</h1>
+  <p>Encuentra y solicita libros disponibles</p>
+  <form class="search-hero" method="GET">
+    <input type="text" name="q" value="{{ termino }}" placeholder="Buscar por título, ISBN o género..." class="search-hero-input">
+    <button type="submit" class="btn btn-primary">Buscar</button>
+    {% if termino %}<a href="{{ url_for('usuario_bp.catalogo') }}" class="btn btn-ghost">Limpiar</a>{% endif %}
+  </form>
+</div>
+
+{% if libros %}
+<div class="books-grid">
+  {% for libro in libros %}
+  <div class="book-card scroll-reveal">
+    <div class="book-cover">
+      <span class="book-emoji">📖</span>
+    </div>
+    <div class="book-info">
+      <h3 class="book-title">{{ libro.titulo }}</h3>
+      <p class="book-autor">{{ libro.autores|map(attribute='nombre')|join(', ') or 'Autor desconocido' }}</p>
+      {% if libro.genero %}<span class="book-genre">{{ libro.genero }}</span>{% endif %}
+      {% if libro.descripcion %}<p class="book-desc">{{ libro.descripcion[:120] }}{% if libro.descripcion|length > 120 %}...{% endif %}</p>{% endif %}
+      <div class="book-footer">
+        {% if libro.esta_disponible() %}
+          <span class="badge badge-success">✓ Disponible ({{ libro.ejemplares_disponibles }})</span>
+        {% else %}
+          <span class="badge badge-danger">✗ No disponible</span>
+        {% endif %}
+        <a href="{{ url_for('usuario_bp.detalle_libro', lid=libro.id) }}" class="btn btn-sm btn-primary">Ver detalle</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state scroll-reveal">
+  <div style="font-size:3rem">📭</div>
+  <p>No se encontraron libros{% if termino %} para "{{ termino }}"{% endif %}.</p>
+</div>
+{% endif %}
+{% endblock %}

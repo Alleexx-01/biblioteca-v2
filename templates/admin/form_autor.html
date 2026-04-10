@@ -1,0 +1,24 @@
+{% extends 'shared/base_admin.html' %}
+{% block title %}{% if autor %}Editar{% else %}Nuevo{% endif %} Autor{% endblock %}
+{% block page_title %}{% if autor %}Editar Autor{% else %}Nuevo Autor{% endif %}{% endblock %}
+{% block content %}
+<div class="form-card scroll-reveal">
+  <form method="POST">
+    <div class="field"><label>Nombre completo *</label>
+      <input type="text" name="nombre" class="form-control" required value="{{ autor.nombre if autor else '' }}" placeholder="Nombre del autor">
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Nacionalidad</label>
+        <input type="text" name="nacionalidad" class="form-control" value="{{ autor.nacionalidad if autor else '' }}" placeholder="Ej: Colombiano">
+      </div>
+      <div class="field"><label>Fecha de nacimiento</label>
+        <input type="date" name="fecha_nac" class="form-control" value="{{ autor.fecha_nac.isoformat() if autor and autor.fecha_nac else '' }}">
+      </div>
+    </div>
+    <div class="form-footer">
+      <button type="submit" class="btn btn-primary">{% if autor %}Guardar cambios{% else %}Registrar autor{% endif %}</button>
+      <a href="{{ url_for('admin.autores') }}" class="btn btn-ghost">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

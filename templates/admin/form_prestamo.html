@@ -1,0 +1,32 @@
+{% extends 'shared/base_admin.html' %}
+{% block title %}Nuevo Préstamo{% endblock %}
+{% block page_title %}Registrar Préstamo{% endblock %}
+{% block content %}
+<div class="form-card scroll-reveal">
+  <form method="POST">
+    <div class="field"><label>Usuario *</label>
+      <select name="usuario_id" class="form-control" required>
+        <option value="">— Seleccionar usuario —</option>
+        {% for u in usuarios %}
+        <option value="{{ u.id }}">{{ u.nombre }} ({{ u.username }})</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field"><label>Libro *</label>
+      <select name="libro_id" class="form-control" required>
+        <option value="">— Seleccionar libro —</option>
+        {% for l in libros %}
+        <option value="{{ l.id }}" {% if not l.esta_disponible() %}disabled{% endif %}>
+          {{ l.titulo }} — {% if l.esta_disponible() %}{{ l.ejemplares_disponibles }} disponible(s){% else %}No disponible{% endif %}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-info">📅 La fecha límite de devolución será <strong>14 días</strong> desde hoy.</div>
+    <div class="form-footer">
+      <button type="submit" class="btn btn-primary">Registrar préstamo</button>
+      <a href="{{ url_for('admin.prestamos') }}" class="btn btn-ghost">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

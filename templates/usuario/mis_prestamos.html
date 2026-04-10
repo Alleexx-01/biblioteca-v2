@@ -1,0 +1,36 @@
+{% extends 'shared/base_usuario.html' %}
+{% block title %}Mis Préstamos{% endblock %}
+{% block content %}
+<div class="page-header-simple scroll-reveal">
+  <h1>📋 Mis Préstamos</h1>
+</div>
+{% if prestamos %}
+<div class="table-wrap scroll-reveal">
+  <table class="table">
+    <thead><tr><th>Libro</th><th>Fecha préstamo</th><th>Fecha límite</th><th>Devolución</th><th>Estado</th></tr></thead>
+    <tbody>
+      {% for p in prestamos %}
+      <tr class="{% if p.esta_vencido() %}row-danger{% endif %}">
+        <td><strong>{{ p.libro.titulo }}</strong></td>
+        <td>{{ p.fecha_prestamo.strftime('%d/%m/%Y') }}</td>
+        <td>{{ p.fecha_limite.strftime('%d/%m/%Y') }}</td>
+        <td>{{ p.fecha_devolucion.strftime('%d/%m/%Y') if p.fecha_devolucion else '—' }}</td>
+        <td>
+          {% if p.estado == 'Activo' %}
+            {% if p.esta_vencido() %}<span class="badge badge-danger">⚠️ Vencido</span>
+            {% else %}<span class="badge badge-warning">Activo — {{ p.dias_restantes() }}d</span>{% endif %}
+          {% else %}<span class="badge badge-success">Devuelto</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state scroll-reveal">
+  <div style="font-size:3rem">📭</div>
+  <p>No tienes préstamos registrados.</p>
+  <a href="{{ url_for('usuario_bp.catalogo') }}" class="btn btn-primary">Explorar catálogo</a>
+</div>
+{% endif %}
+{% endblock %}

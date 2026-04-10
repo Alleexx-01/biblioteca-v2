@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Panel Admin{% endblock %} — Biblioteca Digital</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="app-body">
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-icon">📚</span>
+    <span class="brand-name">Biblioteca</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a href="{{ url_for('admin.dashboard') }}"  class="nav-item {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+      <span class="nav-icon">🏠</span><span>Dashboard</span>
+    </a>
+    <a href="{{ url_for('usuario_bp.catalogo') }}" class="nav-item {% if request.blueprint == 'usuario_bp' %}active{% endif %}">
+      <span class="nav-icon">📖</span><span>Catálogo</span>
+    </a>
+
+    <div class="nav-section-label">Gestión</div>
+    <a href="{{ url_for('admin.libros') }}"    class="nav-item {% if request.endpoint and 'libro' in request.endpoint %}active{% endif %}">
+      <span class="nav-icon">📗</span><span>Libros</span>
+    </a>
+    <a href="{{ url_for('admin.autores') }}"   class="nav-item {% if request.endpoint and 'autor' in request.endpoint %}active{% endif %}">
+      <span class="nav-icon">✍️</span><span>Autores</span>
+    </a>
+    <a href="{{ url_for('admin.usuarios') }}"  class="nav-item {% if request.endpoint and 'usuario' in request.endpoint %}active{% endif %}">
+      <span class="nav-icon">👥</span><span>Usuarios</span>
+    </a>
+
+    <div class="nav-section-label">Préstamos</div>
+    <a href="{{ url_for('admin.prestamos') }}"      class="nav-item {% if request.endpoint == 'admin.prestamos' %}active{% endif %}">
+      <span class="nav-icon">📋</span><span>Activos</span>
+    </a>
+    <a href="{{ url_for('admin.nuevo_prestamo') }}" class="nav-item {% if request.endpoint == 'admin.nuevo_prestamo' %}active{% endif %}">
+      <span class="nav-icon">📤</span><span>Nuevo préstamo</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">{{ current_user.nombre[0].upper() }}</div>
+      <div>
+        <div class="user-name">{{ current_user.nombre }}</div>
+        <div class="user-role">Administrador</div>
+      </div>
+    </div>
+    <a href="{{ url_for('auth.logout') }}" class="btn-logout">Salir</a>
+  </div>
+</aside>
+
+<!-- Main content -->
+<div class="main-wrapper">
+  <header class="topbar">
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+    <h2 class="topbar-title">{% block page_title %}{% endblock %}</h2>
+    <div class="topbar-right">
+      <span class="role-badge badge-admin">Admin</span>
+    </div>
+  </header>
+
+  <main class="main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="alerts-wrap">
+          {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat }} animate-in">
+            {{ msg }}
+            <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+          </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

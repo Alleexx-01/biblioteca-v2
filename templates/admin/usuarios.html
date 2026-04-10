@@ -1,0 +1,32 @@
+{% extends 'shared/base_admin.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block page_title %}Gestión de Usuarios{% endblock %}
+{% block content %}
+<div class="page-actions scroll-reveal">
+  <a href="{{ url_for('admin.nuevo_usuario') }}" class="btn btn-primary">+ Nuevo usuario</a>
+</div>
+<div class="table-wrap scroll-reveal">
+  <table class="table">
+    <thead><tr><th>Nombre</th><th>Username</th><th>Email</th><th>Rol</th><th>Estado</th><th>Préstamos</th><th>Acciones</th></tr></thead>
+    <tbody>
+      {% for u in usuarios %}
+      <tr>
+        <td><strong>{{ u.nombre }}</strong></td>
+        <td><code>{{ u.username }}</code></td>
+        <td>{{ u.email }}</td>
+        <td>{% if u.es_admin %}<span class="badge badge-purple">Admin</span>{% else %}<span class="badge badge-blue">Usuario</span>{% endif %}</td>
+        <td>{% if u.activo %}<span class="badge badge-success">Activo</span>{% else %}<span class="badge badge-danger">Inactivo</span>{% endif %}</td>
+        <td><span class="badge badge-cyan">{{ u.prestamos_activos()|length }}</span></td>
+        <td class="td-actions">
+          <form method="POST" action="{{ url_for('admin.toggle_usuario', uid=u.id) }}" style="display:inline">
+            <button class="btn btn-sm {% if u.activo %}btn-danger{% else %}btn-success{% endif %}">
+              {% if u.activo %}Desactivar{% else %}Activar{% endif %}
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

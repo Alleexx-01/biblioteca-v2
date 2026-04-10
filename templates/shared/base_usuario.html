@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Catálogo{% endblock %} — Biblioteca Digital</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="app-body">
+
+<nav class="topnav">
+  <div class="topnav-brand">
+    <span>📚</span> Biblioteca Digital
+  </div>
+  <div class="topnav-links">
+    <a href="{{ url_for('usuario_bp.catalogo') }}"     class="nav-link {% if request.endpoint == 'usuario_bp.catalogo' %}active{% endif %}">Catálogo</a>
+    <a href="{{ url_for('usuario_bp.mis_prestamos') }}" class="nav-link {% if request.endpoint == 'usuario_bp.mis_prestamos' %}active{% endif %}">Mis Préstamos</a>
+  </div>
+  <div class="topnav-right">
+    <span class="user-greeting">Hola, {{ current_user.nombre.split()[0] }}</span>
+    <span class="role-badge badge-user">Usuario</span>
+    <a href="{{ url_for('auth.logout') }}" class="btn-logout-sm">Salir</a>
+  </div>
+</nav>
+
+<main class="main-content main-content-full">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="alerts-wrap">
+        {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }} animate-in">
+          {{ msg }}
+          <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

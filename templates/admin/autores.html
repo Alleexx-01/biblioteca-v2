@@ -1,0 +1,28 @@
+{% extends 'shared/base_admin.html' %}
+{% block title %}Autores{% endblock %}
+{% block page_title %}Gestión de Autores{% endblock %}
+{% block content %}
+<div class="page-actions scroll-reveal">
+  <a href="{{ url_for('admin.nuevo_autor') }}" class="btn btn-primary">+ Agregar autor</a>
+</div>
+<div class="table-wrap scroll-reveal">
+  <table class="table">
+    <thead><tr><th>Nombre</th><th>Nacionalidad</th><th>Libros</th><th>Acciones</th></tr></thead>
+    <tbody>
+      {% for a in autores %}
+      <tr>
+        <td><strong>{{ a.nombre }}</strong></td>
+        <td>{{ a.nacionalidad or '—' }}</td>
+        <td><span class="badge badge-blue">{{ a.libros|length }}</span></td>
+        <td class="td-actions">
+          <a href="{{ url_for('admin.editar_autor', aid=a.id) }}" class="btn btn-sm btn-secondary">Editar</a>
+          <form method="POST" action="{{ url_for('admin.eliminar_autor', aid=a.id) }}" style="display:inline">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar autor?')">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

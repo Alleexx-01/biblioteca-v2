@@ -1,0 +1,31 @@
+{% extends 'shared/base_admin.html' %}
+{% block title %}Nuevo Usuario{% endblock %}
+{% block page_title %}Registrar Usuario{% endblock %}
+{% block content %}
+<div class="form-card scroll-reveal">
+  <form method="POST">
+    <div class="form-row">
+      <div class="field"><label>Nombre completo *</label><input type="text" name="nombre" class="form-control" required placeholder="Nombre y apellido"></div>
+      <div class="field"><label>Username *</label><input type="text" name="username" class="form-control" required placeholder="Sin espacios"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Email *</label><input type="email" name="email" class="form-control" required placeholder="correo@ejemplo.com"></div>
+      <div class="field"><label>DNI</label><input type="text" name="dni" class="form-control" placeholder="Número de documento"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Contraseña *</label><input type="password" name="password" class="form-control" required placeholder="Mínimo 6 caracteres"></div>
+      <div class="field">
+        <label>Rol *</label>
+        <select name="rol" class="form-control">
+          <option value="usuario">Usuario normal</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button type="submit" class="btn btn-primary">Crear usuario</button>
+      <a href="{{ url_for('admin.usuarios') }}" class="btn btn-ghost">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

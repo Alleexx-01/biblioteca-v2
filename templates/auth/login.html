@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión — Biblioteca Digital</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-body">
+
+  <div class="login-bg">
+    <div class="login-blob blob-1"></div>
+    <div class="login-blob blob-2"></div>
+    <div class="login-blob blob-3"></div>
+  </div>
+
+  <div class="login-wrapper">
+    <div class="login-card animate-in">
+
+      <div class="login-brand">
+        <div class="login-icon">📚</div>
+        <h1>Biblioteca Digital</h1>
+        <p>Ingresa tus credenciales para continuar</p>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" class="login-form">
+        <div class="field">
+          <label for="username">Usuario o Email</label>
+          <div class="field-icon-wrap">
+            <span class="field-icon">👤</span>
+            <input type="text" id="username" name="username"
+                   placeholder="admin / usuario" autocomplete="username" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <div class="field-icon-wrap">
+            <span class="field-icon">🔒</span>
+            <input type="password" id="password" name="password"
+                   placeholder="••••••••" autocomplete="current-password" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login">Iniciar Sesión</button>
+      </form>
+
+      <div class="login-hint">
+        <span class="hint-badge hint-admin">Admin: admin / admin123</span>
+        <span class="hint-badge hint-user">Usuario: usuario / usuario123</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
